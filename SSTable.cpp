@@ -44,3 +44,7 @@ map<string, string> SSTable::get_all_keys() {
     }
     return sst;
 }
+
+vector<uint8_t> SSTable::get_buffer() {
+    return buffer;
+}
