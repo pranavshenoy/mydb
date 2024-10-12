@@ -19,6 +19,7 @@ void test2() {
     auto res = SSTable::convert_to_bytes(key, val);
 
 }
+
 void test1() {
     map<string, string> buffer;
     int i=0;
@@ -35,9 +36,3 @@ void test1() {
     assert(output_buffer == buffer);
 }
 
-
-
-int main() {
-    test1();
-    return 0;
-}

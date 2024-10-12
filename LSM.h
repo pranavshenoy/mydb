@@ -9,7 +9,10 @@ using namespace std;
 
 
 class LSM : public KVStore {
-unique_ptr<MemTable> memtable;
+shared_ptr<MemTable> memtable;
+
+// in number of KV pairs. can be changed into total bytes too!
+int memtable_size;
 
 public:
     LSM();
