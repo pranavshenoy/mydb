@@ -8,7 +8,7 @@ void LSM::put(string key, string val) {
 }
 
 LSM::LSM() {
-    memtable = new MemTable();
+    memtable = make_unique<MemTable>();
 }
 string LSM::get(string key) {
     return memtable->get(key);   

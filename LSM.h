@@ -9,7 +9,7 @@ using namespace std;
 
 
 class LSM : public KVStore {
-MemTable* memtable;
+unique_ptr<MemTable> memtable;
 
 public:
     LSM();
