@@ -10,5 +10,4 @@ string MemTable::get(string key) {
         return "";
     }
     return memtable[key]; 
-    
 }
