@@ -3,13 +3,16 @@
 
 #include "KVStoreInterface.h"
 #include<map>
+#include "MemTable.h"
 
 using namespace std;
 
 
 class LSM : public KVStore {
-map<string, string> memtable;
+MemTable* memtable;
+
 public:
+    LSM();
     void put(string key, string val);
     string get(string key);
 

@@ -4,12 +4,12 @@
 using namespace std;
 
 void LSM::put(string key, string val) {
-    memtable.insert({key, val});
+    memtable->put(key, val);
 }
 
+LSM::LSM() {
+    memtable = new MemTable();
+}
 string LSM::get(string key) {
-    if(memtable.find(key) == memtable.end()) {
-        return "";
-    }
-    return memtable[key];    
+    return memtable->get(key);   
 }
