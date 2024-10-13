@@ -43,4 +43,5 @@ private:
     pair<int, int> GetOffsetRange(string key);
     vector<uint8_t> ReadFromFile(int start, int byte_count);
     string GetValue(string key, vector<uint8_t> data);
+    int total_size; // in bytes
 };

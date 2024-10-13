@@ -33,14 +33,16 @@ bool SSTable::flush(shared_ptr<MemTable> memTable) {
     int i = 0;
     for(auto kv : memTable->memtable) {
         auto tmp_buffer = convert_to_bytes(kv.first, kv.second);
-        buffer.insert(buffer.end(), tmp_buffer.begin(), tmp_buffer.end());
         if(i % sst_index_size == 0) {
-            index.push_back({kv.first, i});
+            index.push_back({kv.first, buffer.size()});
         }
+        buffer.insert(buffer.end(), tmp_buffer.begin(), tmp_buffer.end());
         i++;
     }
+    total_size = buffer.size();
     if(!write(buffer)) {
         index.clear();
+        total_size = 0;
         return false;
     }
     return true;
@@ -70,7 +72,7 @@ pair<int, int> SSTable::GetOffsetRange(string key) {
             return {index[i-1].second, index[i].second};
         }
     }
-    return {-1, -1};
+    return {index.back().second, -1};
 }
 
 vector<uint8_t> SSTable::ReadFromFile(int start, int byte_count) {
@@ -79,26 +81,20 @@ vector<uint8_t> SSTable::ReadFromFile(int start, int byte_count) {
     if(infile.bad()) {
         return {};
     }
-    char* buffer = new char[byte_count];
-    infile.read(buffer, byte_count);
+    vector<uint8_t> buffer(byte_count);
+    infile.read(reinterpret_cast<char*>(buffer.data()), byte_count);
     if(infile.bad()) {
         return {};
     }
-    //TODO: can be avoided
-    vector<uint8_t> vector_buffer;
-    for(int i=0;i<byte_count;i++) {
-        vector_buffer.push_back(buffer[i]);
-    }
-    delete[] buffer;
     infile.close();
-    return vector_buffer;
+    return buffer;
 }
 
 string SSTable::GetValue(string search_key, vector<uint8_t> buffer) {
 
     int i=0;
     while(i < buffer.size()) {
-        int key_len = (int)buffer[i];
+        int key_len = static_cast<int>(buffer[i]);
         i++;
         if(i+key_len > buffer.size()) {
             //Error
@@ -107,7 +103,7 @@ string SSTable::GetValue(string search_key, vector<uint8_t> buffer) {
         string key(buffer.begin() + i, buffer.begin() + i + key_len);
         i += key_len;
 
-        int val_len = (int)buffer[i];
+        int val_len = static_cast<int>(buffer[i]);
         i++;
         if(i+val_len > buffer.size()) {
             //Error
@@ -126,8 +122,11 @@ string SSTable::GetValue(string search_key, vector<uint8_t> buffer) {
 string SSTable::Get(string key) {
 
     auto offset = GetOffsetRange(key);
-    if(offset.first == -1 || offset.second == -1) {
+    if(offset.first == -1) {
         return "";
+    }
+    if(offset.second == -1) {
+        offset.second = total_size;
     }
     auto data = ReadFromFile(offset.first, offset.second - offset.first);
     return GetValue(key, data);

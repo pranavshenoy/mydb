@@ -6,7 +6,8 @@ using namespace std;
 
 LSM::LSM() {
     memtable = make_shared<MemTable>();
-    memtable_size = 10; 
+    context = make_shared<Context>();
+    memtable_size = context->memtable_size; 
 }
 
 void LSM::put(string key, string val) {

@@ -28,7 +28,8 @@ unordered_map<string, string> generate_test_input() {
     unordered_map<string, string> test_input;
     int i=0;
     while(i < 1000) {
-        test_input[to_string(i)] = to_string(i+rand()%1000);
+        // test_input[to_string(i)] = to_string(i+rand()%1000);
+        test_input[to_string(i)] = to_string(i);
         i++;
     }
     return test_input;
@@ -44,7 +45,7 @@ void KVStoreTests::test_writes() {
     }
     for(auto kv : test_input) {
         string val = manager->get(kv.first);
-        if(val.compare(kv.second)) {
+        if(val.compare(kv.second) == 0) {
             cout<<"Value matches for key: "<<kv.first<<" "<<kv.second<<endl;
         } else {
             cout<<"Value DOES NOT match for key: "<<kv.first<<" expected: "<<kv.second<<" actual: "<<val<<endl;

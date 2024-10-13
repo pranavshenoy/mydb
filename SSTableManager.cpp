@@ -17,8 +17,8 @@ SSTableManager::SSTableManager(shared_ptr<Context> context) {
 shared_ptr<SSTableManager> SSTableManager::GetInstance() {
     /*
     TODO: this needs to come from LSM file but for now since the configs are static, it should be fine
-    */
-    shared_ptr<Context> context;
+    */ 
+    shared_ptr<Context> context = make_shared<Context>();
     static shared_ptr<SSTableManager> sstManager = make_shared<SSTableManager>(context);
     return sstManager;
 }
