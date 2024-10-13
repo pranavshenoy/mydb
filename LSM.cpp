@@ -13,7 +13,7 @@ void LSM::put(string key, string val) {
     memtable->put(key, val);
     if(memtable->memtable.size() >= memtable_size) {
         //should be asynchronous
-        bool flushed = SSTableManager::GetInstance()->FlushMemTable(memtable);
+        bool flushed = SSTableManager::GetInstance()->FlushMemTable(context, memtable);
         if(flushed) {
             memtable.reset();
             memtable = make_shared<MemTable>();

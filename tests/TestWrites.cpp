@@ -13,4 +13,12 @@ void KVStoreTests::test_writes() {
         manager->put(to_string(i), to_string(i));
         i++;
     }
+    i=0;
+    while(i < 100) {
+        string val = manager->get(to_string(i));
+        if(val.empty()) {
+            cout<<"Couldn't find value for key: "<<i<<endl;
+        }
+        i++;
+    }
 }
