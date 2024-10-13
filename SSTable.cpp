@@ -89,7 +89,7 @@ vector<uint8_t> SSTable::ReadFromFile(int start, int byte_count) {
     for(int i=0;i<byte_count;i++) {
         vector_buffer.push_back(buffer[i]);
     }
-    delete buffer;
+    delete[] buffer;
     infile.close();
     return vector_buffer;
 }

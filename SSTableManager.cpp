@@ -1,6 +1,5 @@
 #include "SSTableManager.h"
 #include "SSTable.h"
-#include "SSTMetaData.h"
 #include <fstream>
 
 

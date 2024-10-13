@@ -36,7 +36,7 @@ unordered_map<string, string> generate_test_input() {
 
 void KVStoreTests::test_writes() {
 
-    unique_ptr<KVStore> store = make_unique<KVStore>();
+    unique_ptr<KVStore> store = make_unique<LSM>();
     KVStoreManager* manager = new KVStoreManager(std::move(store));
     auto test_input = generate_test_input();
     for(auto kv : test_input) {
