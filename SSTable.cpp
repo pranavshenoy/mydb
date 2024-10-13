@@ -74,12 +74,52 @@ pair<int, int> SSTable::GetOffsetRange(string key) {
 }
 
 vector<uint8_t> SSTable::ReadFromFile(int start, int byte_count) {
-
-
+    ifstream infile(path, std::ios::binary);
+    infile.seekg(start);
+    if(infile.bad()) {
+        return {};
+    }
+    char* buffer = new char[byte_count];
+    infile.read(buffer, byte_count);
+    if(infile.bad()) {
+        return {};
+    }
+    //TODO: can be avoided
+    vector<uint8_t> vector_buffer;
+    for(int i=0;i<byte_count;i++) {
+        vector_buffer.push_back(buffer[i]);
+    }
+    delete buffer;
+    infile.close();
+    return vector_buffer;
 }
 
-string SSTable::GetValue(string key, vector<uint8_t> data) {
+string SSTable::GetValue(string search_key, vector<uint8_t> buffer) {
 
+    int i=0;
+    while(i < buffer.size()) {
+        int key_len = (int)buffer[i];
+        i++;
+        if(i+key_len > buffer.size()) {
+            //Error
+            return "";
+        }
+        string key(buffer.begin() + i, buffer.begin() + i + key_len);
+        i += key_len;
+
+        int val_len = (int)buffer[i];
+        i++;
+        if(i+val_len > buffer.size()) {
+            //Error
+            return {};
+        }
+        string val(buffer.begin() + i, buffer.begin() + i + val_len);
+        if(search_key.compare(key) == 0) {
+            return val;
+        }
+        i += val_len;
+    }
+    return "";
 }
 
 
@@ -92,33 +132,3 @@ string SSTable::Get(string key) {
     auto data = ReadFromFile(offset.first, offset.second - offset.first);
     return GetValue(key, data);
 }
-
-// map<string, string> SSTable::get_all_keys() {
-//     map<string, string> sst;
-//     int i=0;
-//     while(i < buffer.size()) {
-//         int key_len = (int)buffer[i];
-//         i++;
-//         if(i+key_len > buffer.size()) {
-//             //Error
-//             return {};
-//         }
-//         string key(buffer.begin() + i, buffer.begin() + i + key_len);
-//         i += key_len;
-
-//         int val_len = (int)buffer[i];
-//         i++;
-//         if(i+val_len > buffer.size()) {
-//             //Error
-//             return {};
-//         }
-//         string val(buffer.begin() + i, buffer.begin() + i + val_len);
-//         sst.insert({key, val});
-//         i += val_len;
-//     }
-//     return sst;
-// }
-
-// vector<uint8_t> SSTable::get_buffer() {
-//     return buffer;
-// }

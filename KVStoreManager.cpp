@@ -2,8 +2,8 @@
 #include "KVStoreManager.h"
 using namespace std;
 
-KVStoreManager::KVStoreManager(KVStore* new_store) {
-    store = new_store;
+KVStoreManager::KVStoreManager(unique_ptr<KVStore> new_store) {
+    store = move(new_store);
 }
 
 void KVStoreManager::put(string key, string val) {
