@@ -39,10 +39,17 @@ bool SSTableManager::FlushMemTable(shared_ptr<Context> context, shared_ptr<MemTa
     if(!sst->flush(memTable)) {
         return false;
     }
-    sstInMemoryIndex.push_back(sst);
+    sst_list.push_back(sst);
     return true;
 }
 
 string SSTableManager::Get(string key) {
     
+    for(int i=sst_list.size()-1; i>= 0;i-- ) {
+        string val = sst_list[i]->Get(key);
+        if(!val.empty()) {
+            return val;
+        }
+    }
+    return "";
 }

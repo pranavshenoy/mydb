@@ -40,5 +40,7 @@ public:
     
 private:
     bool write(vector<uint8_t> data);
-
+    pair<int, int> GetOffsetRange(string key);
+    vector<uint8_t> ReadFromFile(int start, int byte_count);
+    string GetValue(string key, vector<uint8_t> data);
 };

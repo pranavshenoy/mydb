@@ -57,8 +57,40 @@ vector<uint8_t> SSTable::convert_to_bytes(string key, string val) {
     return buffer;
 }
 
+pair<int, int> SSTable::GetOffsetRange(string key) {
+    if(index.empty()) {
+        return {-1, -1};
+    }
+    if(key.compare(index[0].first) < 0) {
+        return {-1, -1};
+    }
+    for(int i=1; i<index.size();i++) {
+        string curr = index[i].first;
+        if(key.compare(curr) < 0) {
+            return {index[i-1].second, index[i].second};
+        }
+    }
+    return {-1, -1};
+}
+
+vector<uint8_t> SSTable::ReadFromFile(int start, int byte_count) {
+
+
+}
+
+string SSTable::GetValue(string key, vector<uint8_t> data) {
+
+}
+
+
 string SSTable::Get(string key) {
 
+    auto offset = GetOffsetRange(key);
+    if(offset.first == -1 || offset.second == -1) {
+        return "";
+    }
+    auto data = ReadFromFile(offset.first, offset.second - offset.first);
+    return GetValue(key, data);
 }
 
 // map<string, string> SSTable::get_all_keys() {
